@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Role Invitation</title>
+  <style>
+    body {
+      background-color: #f5f7fa;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 30px auto;
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+    }
+
+    .header {
+      background-color: #2563eb;
+      color: #fff;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    .content {
+      padding: 24px;
+      line-height: 1.6;
+    }
+
+    .content p {
+      margin: 12px 0;
+    }
+
+    .highlight {
+      color: #2563eb;
+      font-weight: 600;
+    }
+
+    .buttons {
+      margin: 30px 0;
+      text-align: center;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 24px;
+      border-radius: 6px;
+      text-decoration: none;
+      color: #fff;
+      font-weight: 600;
+      margin: 0 8px;
+    }
+
+    .btn-accept {
+      background-color: #16a34a;
+    }
+
+    .btn-reject {
+      background-color: #dc2626;
+    }
+
+    .footer {
+      background-color: #f9fafb;
+      padding: 16px;
+      text-align: center;
+      font-size: 13px;
+      color: #777;
+      border-top: 1px solid #eee;
+    }
+
+    .fallback {
+      font-size: 13px;
+      color: #666;
+      word-break: break-all;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1>Zepto <span th:text="${role}">Admin</span> Role Invitation</h1>
+    </div>
+
+    <!-- Body Content -->
+    <div class="content">
+      <p>
+        Hello <span th:text="${adminName}">Admin</span>,
+      </p>
+
+      <p>
+        <span class="highlight" th:text="${maintName}">Maint</span> has invited you to join
+        <span th:text="${appName}">Zepto </span> as an <span th:text="${role}"><strong>Administrator</strong></span>.
+      </p>
+
+      <p>
+        As an <span th:text="${role}">admin</span>, you will have elevated permissions to manage users, view analytics, and configure
+        system settings. Please confirm your acceptance below.
+      </p>
+
+      <!-- Buttons -->
+      <div class="buttons">
+        <a th:href="${acceptUrl}" class="btn btn-accept" target="_blank">Accept Invitation</a>
+        <a th:href="${rejectUrl}" class="btn btn-reject" target="_blank">Reject Invitation</a>
+      </div>
+
+      <p class="fallback">
+        If the buttons donot work, you can also use these links:<br />
+        <strong>Accept:</strong> <a th:href="${acceptUrl}" th:text="${acceptUrl}"></a><br />
+        <strong>Reject:</strong> <a th:href="${rejectUrl}" th:text="${rejectUrl}"></a>
+      </p>
+
+      <p>
+        This invitation will expire on <span th:text="${expiryDate}">Nov 2, 2025</span>.
+      </p>
+
+      <p>Thank you,<br />
+      <span th:text="${maintName}">Maint User</span></p>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      © <span th:text="${#dates.format(today, 'yyyy')}">2025</span> <span th:text="${appName}">Zepto</span>.  
+      All rights reserved.
+    </div>
+  </div>
+</body>
+</html>
