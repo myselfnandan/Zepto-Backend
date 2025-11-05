@@ -4,11 +4,13 @@ import org.springframework.stereotype.Component;
 
 import com.zepto.zepto_backend.dtos.AdminRequestBody;
 import com.zepto.zepto_backend.dtos.ConsumerRequestBody;
+import com.zepto.zepto_backend.dtos.OrderListResponseBody;
 import com.zepto.zepto_backend.dtos.ProductRequestBody;
 import com.zepto.zepto_backend.dtos.WareHouseProductRequestBody;
 import com.zepto.zepto_backend.dtos.WareHouseRequestBody;
 import com.zepto.zepto_backend.enums.UserStatus;
 import com.zepto.zepto_backend.enums.UserType;
+import com.zepto.zepto_backend.model.CartItem;
 import com.zepto.zepto_backend.model.Location;
 import com.zepto.zepto_backend.model.Product;
 import com.zepto.zepto_backend.model.User;
@@ -102,4 +104,17 @@ public class MappingUtility {
     wareHouseItem.setTotalQuantity(wareHouseProductRequestBody.getTotalQuantity());
     return wareHouseItem;
   }
+
+  public OrderListResponseBody mapCartItemToOrderListRB(CartItem cartItem, Product product) {
+    OrderListResponseBody responseBody = new OrderListResponseBody();
+    
+    responseBody.setProductName(product.getProductName());
+    responseBody.setImglink(product.getImglink());
+    responseBody.setManufacturerName(product.getManufacturerName());
+    responseBody.setBaseprice(cartItem.getFinalprice());
+    responseBody.setDiscount(cartItem.getDiscount());
+    responseBody.setTotalQuantity(cartItem.getQuantity());
+    return responseBody;
+}
+
 }

@@ -1,19 +1,27 @@
 package com.zepto.zepto_backend.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import javax.management.RuntimeErrorException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.zepto.zepto_backend.dtos.CartRequestBody;
+import com.zepto.zepto_backend.dtos.OrderListResponseBody;
 import com.zepto.zepto_backend.model.Cart;
 import com.zepto.zepto_backend.model.CartItem;
+import com.zepto.zepto_backend.model.Product;
 import com.zepto.zepto_backend.model.WareHouse;
 import com.zepto.zepto_backend.model.WareHouseItem;
 import com.zepto.zepto_backend.repository.CartItemRepository;
 import com.zepto.zepto_backend.repository.CartRepository;
+import com.zepto.zepto_backend.repository.ProductRepository;
 import com.zepto.zepto_backend.repository.WareHouseItemRepository;
+import com.zepto.zepto_backend.utility.MappingUtility;
 
 
 @Service
@@ -31,16 +39,19 @@ public class CartService {
   @Autowired
   WareHouseItemRepository wareHouseItemRepository;
 
+  @Autowired
+  MappingUtility mappingUtility;
+
+  @Autowired
+  ProductRepository productRepository;
+
   public void addToCart(CartRequestBody cartRequestBody){
     UUID userId = cartRequestBody.getUserId();
     UUID pid = cartRequestBody.getPid();
     int quantityToAdd = cartRequestBody.getQuantity();
 
     Cart cart = cartRepository.findByUserId(userId)
-    .orElseGet(() -> {
-        Cart newCart = new Cart(userId);
-        return cartRepository.save(newCart);
-    });
+    .orElseGet(() -> cartRepository.save(new Cart(userId)));
 
     WareHouse wareHouse = helperForSearchService.getWareHouseByPinCode(userId);
     if(wareHouse == null){
@@ -74,5 +85,19 @@ public class CartService {
       cartItemRepository.save(cartItem);
     }
     
+  }
+
+  public List<OrderListResponseBody> getCartItems(UUID userId){
+    Cart cart = cartRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Cart Dosen't Exist For This User"));
+    
+    List<CartItem> cartItems = cart.getCartItems();
+    List<OrderListResponseBody> responseList = new ArrayList<>();
+    for(CartItem cartItem : cartItems){
+      Product product = productRepository.findById(cartItem.getPid()).orElseThrow(() -> new RuntimeException("Product Not Found"));
+      OrderListResponseBody response = mappingUtility.mapCartItemToOrderListRB(cartItem, product);
+      responseList.add(response);
+    }
+    return responseList;
   }
 }
